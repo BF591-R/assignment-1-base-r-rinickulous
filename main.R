@@ -61,7 +61,7 @@ is_between <- function(x, a, b) {
 #' rm_na(x)
 #' [1] 1 2 3
 rm_na <- function(x) {
-    return(is.na(x))
+  return(x[!is.na(x)])
 }
 
 #' Calculate the median of each row of a matrix
@@ -80,7 +80,7 @@ rm_na <- function(x) {
 #' [1] 1 4 7
 #' 
 row_medians <- function(x) {
-    return(NULL)
+    return(apply(x, 1, median))
 }
 
 #' Evaluate each row of a matrix with a provided function
@@ -105,7 +105,7 @@ row_medians <- function(x) {
 #' summarize_rows(m, mean)
 #' [1] 2 5 8
 summarize_rows <- function(x, fn, na.rm=FALSE) {
-    return(NULL)
+  apply(x, 1, function(row) fn(row, na.rm = na.rm))
 }
 
 #' Summarize matrix rows into data frame
