@@ -144,8 +144,37 @@ summarize_rows <- function(x, fn, na.rm=FALSE) {
 #' 2 -0.01574033 1.026951 -0.04725656 -2.967057 2.571608      112              70      0
 #' 3 -0.09040182 1.027559 -0.02774705 -3.026888 2.353087      130              54      0
 #' 4  0.09518138 1.030461  0.11294781 -3.409049 2.544992       90              72      0
-summarize_matrix <- function(x, na.rm=FALSE) {
-    return(NULL)
+
+summarize_row <- function(row, na.rm = FALSE) {
+  # Filter out NA values if na.rm is TRUE
+  if (na.rm) {
+    row <- row[!is.na(row)]
+  }
+  
+  c(
+    mean = mean(row, na.rm = na.rm),
+    stdev = sd(row, na.rm = na.rm),
+    median = median(row, na.rm = na.rm),
+    min = min(row, na.rm = na.rm),
+    max = max(row, na.rm = na.rm),
+    num_lt_0 = sum(row < 0, na.rm = na.rm),
+    num_btw_1_and_5 = sum(row > 1 & row < 5, na.rm = na.rm),
+    num_na = sum(is.na(row))
+  )
+}
+
+
+summarize_matrix <- function(x, na.rm = FALSE) {
+  # Summarize each row using summarize_row
+  summary_list <- summarize_rows(x, summarize_row, na.rm = na.rm)
+  
+  # Convert the list of summaries to a data frame
+  summary_df <- as.data.frame(t(summary_list))
+  
+  # Set column names
+  colnames(summary_df) <- c("mean", "stdev", "median", "min", "max", "num_lt_0", "num_btw_1_and_5", "num_na")
+  
+  return(summary_df)
 }
 
 # ------------ Helper Functions Used By Assignment, You May Ignore ------------
